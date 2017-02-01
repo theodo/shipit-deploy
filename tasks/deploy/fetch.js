@@ -1,6 +1,7 @@
 var utils = require('shipit-utils');
 var chalk = require('chalk');
 var mkdirp = require('mkdirp');
+var path = require('path');
 var Promise = require('bluebird');
 
 /**
@@ -44,7 +45,9 @@ module.exports = function (gruntOrShipit) {
 
       if (shipit.config.shallowClone) {
         shipit.log('Deleting existing workspace "%s"', shipit.config.workspace);
-        return shipit.local('rm -rf ' + shipit.config.workspace)
+        var basename = path.basename(shipit.config.workspace)
+        var dirname = path.dirname(shipit.config.workspace)
+        return shipit.local('rm -rf ' + basename, {cwd: dirname})
         .then(create);
       }
 

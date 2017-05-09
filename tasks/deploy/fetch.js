@@ -77,12 +77,13 @@ module.exports = function (gruntOrShipit) {
 
       shipit.log('Set custom git config options for "%s"', shipit.config.workspace);
 
-      return Promise.all(Object.keys(shipit.config.gitConfig || {}).map(function (key, gitConfig) {
-        return shipit.local(
-          'git config ' + key + ' "' + shipit.config.gitConfig[key] + '"',
-          {cwd: shipit.config.workspace}
-        );
-      }))
+      return shipit.local(
+        Object.keys(shipit.config.gitConfig || {}).map(function (key, gitConfig) {
+          return 'git config ' + key + ' "' + shipit.config.gitConfig[key] + '"';
+        })
+        .join(" && "),
+        {cwd: shipit.config.workspace}
+      )
       .then(function () {
         shipit.log(chalk.green('Git config set.'));
       });
